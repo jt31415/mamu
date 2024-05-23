@@ -45,7 +45,7 @@ def get_mod_dir() -> str:
 MOD_DIR = get_mod_dir()
 
 def get_best_version(id: str, game_version: str, loader: str):
-    params = {"game_versions": [game_version,], "loaders": [loader,]}
+    params = {"game_versions": f'["{game_version}"]', "loaders": f'["{loader}"]'}
     res = json.loads(requests.get(f"{BASE_URL}project/{id}/version", params=params, headers=HEADERS).text)
     if len(res) == 0:
         return
@@ -59,6 +59,8 @@ def download_version(id: str):
             f.write(requests.get(file["url"]).content)
 
 def main():
+
+    logging.info(f"Using version game version {GAME_VERSION} and {LOADER} loader")
 
     # Compile mod slugs + mod dependencies
 
