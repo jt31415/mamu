@@ -2,16 +2,21 @@
 import requests
 import os
 import logging
-
+import re
 import json
+import argparse
 
 logging.basicConfig(format="[%(levelname)s] %(message)s", level=logging.INFO)
+
+parser = argparse.ArgumentParser(description="Automatically downloads and updates mods from Modrinth")
+parser.add_argument("--config", "-c", help="Path to config file", default="config.json")
+args = parser.parse_args()
 
 BASE_URL = "https://api.modrinth.com/v2/"
 
 # Get mod list from json config (config.json)
 
-CONFIG = json.load(open("config.json"))
+CONFIG = json.load(open(args.config))
 PROJECT_SLUGS = CONFIG["mods"]
 GAME_VERSION = CONFIG["version"]
 LOADER = CONFIG["loader"]
@@ -69,6 +74,10 @@ def main():
     
     for project in project_slugs:
 
+        m = re.fullmatch(r"https://modrinth.com/mod/([a-z\-]+)", project)
+        if m != None:
+            project = m.group(1)
+
         use_version = get_best_version(project, GAME_VERSION, LOADER)
         if use_version == None:
             logging.error(f"Could not find any versions for {project} that satisfy your requirements")
@@ -81,9 +90,7 @@ def main():
         for dependency in use_version["dependencies"]:
             if dependency["dependency_type"] == "required":
 
-                version_id = dependency['version_id']
-                if version_id == None:
-                    version_id = get_best_version(dependency['project_id'], GAME_VERSION, LOADER)["id"]
+                version_id = get_best_version(dependency['project_id'], GAME_VERSION, LOADER)["id"]
                 
                 logging.debug(f"Found required dependency {dependency['project_id']} (id {version_id})")
                 mod_ids.add(version_id)
