@@ -10,6 +10,7 @@ logging.basicConfig(format="[%(levelname)s] %(message)s", level=logging.INFO)
 
 parser = argparse.ArgumentParser(description="Automatically downloads and updates mods from Modrinth")
 parser.add_argument("--config", "-c", help="Path to config file", default="config.json")
+parser.add_argument("--moddir", "-d", help="Path to the mods directory", default=None)
 args = parser.parse_args()
 
 BASE_URL = "https://api.modrinth.com/v2/"
@@ -24,6 +25,9 @@ LOADER = CONFIG["loader"]
 HEADERS = {"User-Agent": "mamu/1.0.0"}
 
 def get_mod_dir() -> str:
+
+    if args.moddir:
+        return args.moddir
 
     APPDATA = os.environ['APPDATA']
 
