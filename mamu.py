@@ -72,8 +72,8 @@ def get_best_version(id: str, game_version: str, loader: str):
     return res[0]
 
 def download_file(url: str, filepath: str):
+    res = requests.get(url)
     with open(filepath, "wb") as f:
-        res = requests.get(url)
         if res.status_code != 404:
             f.write(res.content)
         else:
