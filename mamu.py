@@ -11,7 +11,7 @@ logging.basicConfig(format="[%(levelname)s] %(message)s", level=logging.INFO)
 parser = argparse.ArgumentParser(
     description="Automatically downloads and updates mods from Modrinth")
 parser.add_argument(
-    "--config", "-c", help="Path to config file", default="config.json")
+    "--config", "-c", help="Path to config file", default="./configs/config.json")
 parser.add_argument(
     "--moddir", "-d", help="Path to the mods directory", default=None)
 args = parser.parse_args()
